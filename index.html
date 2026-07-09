@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Close Reading Program</title>
+<meta name="description" content="An online deep-reading & writing program for grades 4-12: whole books read two grades early, live seminars, and instant AI feedback between them.">
+<style>
+  html,body{margin:0;padding:0}
+  body{background:#E8E9E3}
+  @media (prefers-color-scheme: dark){ body{background:#14161B} }
+</style>
+</head>
+<body>
+<style>
+/* ============================================================
+   The Close Reading Program — product demo
+   Identity: "the marked-up page." Cool book-stock ground, ink black,
+   editor's-pen red (student feedback), seminar teal (instructor),
+   highlighter behind quoted spans. Serif display / sans body / mono marks.
+   ============================================================ */
+
+:root {
+  --paper:   #E8E9E3;
+  --surface: #F6F6F2;
+  --raise:   #FCFCFA;
+  --ink:     #1A1D22;
+  --ink-2:   #565C64;
+  --ink-3:   #838a92;
+  --rule:    #D3D4CC;
+  --accent:  #A6382B;   /* editor's pen red — student feedback / scores */
+  --accent-ink:#8a2c20;
+  --teal:    #2C4A53;   /* seminar / instructor */
+  --mark:    #F0E3A4;   /* highlighter behind quotes */
+  --mark-ink:#1A1D22;
+  --good:    #3f6b4a;
+
+  --serif: 'Iowan Old Style','Palatino Linotype',Palatino,'Hoefler Text',Georgia,'Times New Roman',serif;
+  --sans: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono: ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,monospace;
+
+  --wrap: 1060px;
+  --gap: clamp(16px, 3vw, 34px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:   #14161B;
+    --surface: #1C1F26;
+    --raise:   #232730;
+    --ink:     #E7E8EA;
+    --ink-2:   #9CA2AC;
+    --ink-3:   #727884;
+    --rule:    #2E323C;
+    --accent:  #DE6C5C;
+    --accent-ink:#E88A7C;
+    --teal:    #7FB3C0;
+    --mark:    rgba(240,227,164,0.20);
+    --mark-ink:#F0E7C6;
+  }
+}
+:root[data-theme="light"] {
+  --paper:#E8E9E3; --surface:#F6F6F2; --raise:#FCFCFA; --ink:#1A1D22; --ink-2:#565C64;
+  --ink-3:#838a92; --rule:#D3D4CC; --accent:#A6382B; --accent-ink:#8a2c20; --teal:#2C4A53;
+  --mark:#F0E3A4; --mark-ink:#1A1D22;
+}
+:root[data-theme="dark"] {
+  --paper:#14161B; --surface:#1C1F26; --raise:#232730; --ink:#E7E8EA; --ink-2:#9CA2AC;
+  --ink-3:#727884; --rule:#2E323C; --accent:#DE6C5C; --accent-ink:#E88A7C; --teal:#7FB3C0;
+  --mark:rgba(240,227,164,0.20); --mark-ink:#F0E7C6;
+}
+
+* { box-sizing: border-box; }
+.crp { background: var(--paper); color: var(--ink); font-family: var(--sans); line-height: 1.62;
+  -webkit-font-smoothing: antialiased; font-size: 17px; }
+.crp .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
+
+.crp h1,.crp h2,.crp h3 { font-family: var(--serif); font-weight: 600; text-wrap: balance; letter-spacing: -0.01em; }
+.crp p { max-width: 66ch; }
+.crp em { font-style: italic; }
+
+.crp .eyebrow { font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.16em;
+  font-size: 0.7rem; font-weight: 600; color: var(--accent); margin: 0; }
+.crp .eyebrow.teal { color: var(--teal); }
+
+/* ---------- masthead ---------- */
+.crp .masthead { border-bottom: 1px solid var(--rule); }
+.crp .mast-inner { display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+  padding: 18px 0; flex-wrap: wrap; }
+.crp .logo { font-family: var(--serif); font-weight: 600; font-size: 1.15rem; letter-spacing:-0.01em; }
+.crp .logo .mark-red { color: var(--accent); }
+.crp .mast-meta { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-2);
+  text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* ---------- hero ---------- */
+.crp .hero { padding: clamp(46px,7vw,84px) 0 clamp(30px,4vw,44px); }
+.crp .hero h1 { font-size: clamp(2.1rem, 5.2vw, 3.5rem); line-height: 1.08; margin: 16px 0 0; max-width: 17ch; }
+.crp .hero h1 .u { background: linear-gradient(transparent 62%, var(--mark) 62%); padding: 0 .05em; }
+.crp .standfirst { font-size: clamp(1.05rem,1.7vw,1.24rem); color: var(--ink-2); margin: 22px 0 0; max-width: 58ch; }
+.crp .pill-row { display:flex; flex-wrap:wrap; gap:10px; margin-top: 26px; }
+.crp .pill { font-family: var(--mono); font-size:0.74rem; letter-spacing:0.02em; border:1px solid var(--rule);
+  border-radius: 999px; padding: 6px 13px; color: var(--ink-2); background: var(--surface); }
+.crp .pill b { color: var(--ink); font-weight: 600; }
+
+/* ---------- section frame ---------- */
+.crp section { padding: clamp(38px,5vw,64px) 0; border-top: 1px solid var(--rule); }
+.crp .sec-head { max-width: 62ch; margin-bottom: clamp(22px,3vw,34px); }
+.crp .sec-head h2 { font-size: clamp(1.5rem,3vw,2.05rem); line-height:1.16; margin:10px 0 0; }
+.crp .sec-head p { color: var(--ink-2); margin: 12px 0 0; }
+
+/* ---------- demo console ---------- */
+.crp .console { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; }
+.crp .console-bar { display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding: 12px 16px; border-bottom: 1px solid var(--rule); background: var(--raise); flex-wrap: wrap; }
+.crp .seg { display:inline-flex; background: var(--paper); border:1px solid var(--rule); border-radius: 9px; padding: 3px; gap:3px; }
+.crp .seg button { font-family: var(--sans); font-size: 0.9rem; font-weight:600; color: var(--ink-2);
+  background: transparent; border: 0; border-radius: 6px; padding: 7px 15px; cursor: pointer; transition: background .15s, color .15s; }
+.crp .seg button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+.crp .runtag { font-family: var(--mono); font-size: 0.68rem; color: var(--ink-3); letter-spacing:0.04em; }
+.crp .runtag .dot { color: var(--good); }
+
+.crp .panel { display: grid; grid-template-columns: 1fr 1fr; }
+.crp .panel[hidden] { display: none; }   /* must beat .panel's display:grid, else [hidden] is ignored */
+.crp .panel > div { padding: clamp(18px,2.5vw,28px); }
+.crp .panel .src { border-right: 1px solid var(--rule); background: var(--surface); }
+.crp .panel .read { background: var(--raise); }
+@media (max-width: 800px){ .crp .panel { grid-template-columns: 1fr; } .crp .panel .src { border-right:0; border-bottom:1px solid var(--rule);} }
+
+.crp .col-label { font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.14em;
+  font-size: 0.68rem; color: var(--ink-3); margin: 0 0 14px; display:flex; align-items:center; gap:8px; }
+.crp .col-label::after { content:""; flex:1; height:1px; background: var(--rule); }
+
+/* reader toggle */
+.crp .rtoggle { display:inline-flex; gap:0; border:1px solid var(--rule); border-radius: 8px; overflow:hidden; margin-bottom: 6px; }
+.crp .rtoggle button { font-family: var(--sans); font-size:0.82rem; font-weight:600; padding:6px 12px; border:0; cursor:pointer;
+  background: var(--surface); color: var(--ink-2); border-right:1px solid var(--rule); transition: background .15s,color .15s; }
+.crp .rtoggle button:last-child{ border-right:0; }
+.crp .rtoggle button[aria-selected="true"]{ background: var(--accent); color:#fff; }
+:root[data-theme="dark"] .crp .rtoggle button[aria-selected="true"],
+@media (prefers-color-scheme: dark){ .crp .rtoggle button[aria-selected="true"]{ color:#14161B; } }
+.crp .rcaption { font-size:0.86rem; color: var(--ink-3); margin: 10px 0 16px; font-style: italic; }
+
+/* annotation marks */
+.crp .mark-card { border-left: 2px solid var(--rule); padding: 2px 0 2px 14px; margin: 0 0 15px; }
+.crp .mark-card .q { font-family: var(--serif); font-size: 1.02rem; line-height:1.4; }
+.crp .hl { background: linear-gradient(transparent 6%, var(--mark) 6% 92%, transparent 92%); color: var(--mark-ink); padding:0 .06em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.crp .mark-card .n { font-size: 0.9rem; color: var(--ink-2); margin: 5px 0 0; }
+.crp .mark-card .tag { font-family: var(--mono); font-size:0.62rem; text-transform:uppercase; letter-spacing:0.08em;
+  color: var(--ink-3); border:1px solid var(--rule); border-radius:4px; padding:1px 6px; margin-left:6px; }
+.crp .qlist { list-style:none; padding:0; margin: 4px 0 0; }
+.crp .qlist li { font-family: var(--serif); font-size:0.98rem; padding:7px 0 7px 22px; position:relative; color: var(--ink); border-top:1px dotted var(--rule); }
+.crp .qlist li:first-child{ border-top:0; }
+.crp .qlist li::before{ content:"?"; position:absolute; left:0; color: var(--accent); font-family: var(--mono); font-weight:700; }
+
+.crp .essay { font-family: var(--serif); font-size: 1.0rem; line-height: 1.66; color: var(--ink); }
+.crp .essay .ttl { font-weight:600; font-size:1.1rem; display:block; margin-bottom:8px; }
+
+/* engine read */
+.crp .overall { font-family: var(--serif); font-size: 1.06rem; line-height:1.5; margin: 0 0 20px;
+  padding: 14px 16px; background: var(--surface); border:1px solid var(--rule); border-radius: 10px; }
+.crp .scores { display:flex; flex-direction:column; gap: 11px; margin: 0 0 22px; }
+.crp .score { display:grid; grid-template-columns: 1fr auto; gap: 3px 12px; align-items:center; }
+.crp .score .name { font-size:0.9rem; font-weight:600; }
+.crp .score .lvl { font-family: var(--mono); font-size:0.7rem; color: var(--ink-2); text-align:right; letter-spacing:0.02em; }
+.crp .meter { grid-column: 1 / -1; display:flex; gap:4px; margin-top:2px; }
+.crp .meter i { height: 7px; flex:1; border-radius: 2px; background: var(--rule); transition: background .5s ease; }
+.crp .meter i.on { background: var(--accent); }
+.crp .meter i.insuff { background: repeating-linear-gradient(45deg,var(--rule),var(--rule) 3px,transparent 3px,transparent 6px); }
+.crp .score .just { grid-column:1/-1; font-size:0.82rem; color: var(--ink-2); margin-top:2px; }
+
+.crp .fb { margin: 0 0 8px; }
+.crp .fb-item { border-top:1px solid var(--rule); padding: 12px 0; }
+.crp .fb-item .ref { font-family: var(--mono); font-size:0.74rem; color: var(--ink-2); }
+.crp .fb-item .strong { font-size:0.9rem; margin:6px 0 0; }
+.crp .fb-item .strong b { color: var(--good); font-weight:600; }
+.crp .fb-item .push { font-size:0.9rem; margin:4px 0 0; }
+.crp .fb-item .push b { color: var(--accent); font-weight:600; }
+
+.crp .seminar { border:1px solid var(--rule); border-radius:10px; padding: 16px; margin-top: 18px; background: var(--surface); }
+.crp .seminar .h { font-family: var(--mono); text-transform:uppercase; letter-spacing:0.1em; font-size:0.68rem; color: var(--teal); margin:0 0 10px; }
+.crp .seminar ol { margin:0; padding-left: 1.1em; }
+.crp .seminar li { font-family: var(--serif); font-size:0.96rem; margin: 8px 0; padding-left: 4px; }
+.crp .seminar li::marker { color: var(--teal); font-family: var(--mono); font-size:0.8rem; }
+
+.crp .nextstep { font-size:0.9rem; margin-top:16px; padding:12px 14px; border-radius:9px;
+  border:1px dashed var(--accent); color: var(--ink); background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.crp .nextstep b { font-family: var(--mono); font-size:0.66rem; text-transform:uppercase; letter-spacing:0.1em; color: var(--accent); display:block; margin-bottom:4px; }
+
+.crp .minilesson { border:1px solid var(--rule); border-radius:10px; padding:16px; margin-top:16px; background: var(--surface); }
+.crp .minilesson .h { font-family: var(--mono); text-transform:uppercase; letter-spacing:0.1em; font-size:0.68rem; color: var(--ink-3); margin:0 0 8px; }
+.crp .minilesson .f { font-family: var(--serif); font-weight:600; font-size:1.02rem; margin-bottom:6px; }
+.crp .minilesson p { font-size:0.88rem; color: var(--ink-2); margin:0; }
+
+/* ---------- three pillars ---------- */
+.crp .pillars { display:grid; grid-template-columns: repeat(3,1fr); gap: var(--gap); }
+@media (max-width:820px){ .crp .pillars{ grid-template-columns:1fr; } }
+.crp .pillar { border-top: 2px solid var(--accent); padding-top: 16px; }
+.crp .pillar:nth-child(2){ border-top-color: var(--teal); }
+.crp .pillar:nth-child(3){ border-top-color: var(--ink); }
+.crp .pillar h3 { font-size:1.2rem; margin: 0 0 8px; }
+.crp .pillar p { font-size:0.94rem; color: var(--ink-2); margin:0; }
+
+/* ---------- outcomes strip ---------- */
+.crp .vstrip { display:grid; grid-template-columns: repeat(3,1fr); gap: var(--gap); }
+@media (max-width:820px){ .crp .vstrip{ grid-template-columns:1fr; } }
+.crp .vstat .k { font-family: var(--serif); font-size:1.5rem; font-weight:600; color: var(--accent); }
+.crp .vstat p { font-size:0.92rem; color: var(--ink-2); margin:6px 0 0; }
+
+/* ---------- CTA ---------- */
+.crp .cta { text-align:center; }
+.crp .cta .price { font-family: var(--serif); }
+.crp .cta .price .n { font-size: 2.6rem; font-weight:600; }
+.crp .cta .price .p { color: var(--ink-2); }
+.crp form.notify { display:flex; gap:10px; max-width: 460px; margin: 22px auto 0; flex-wrap:wrap; justify-content:center; }
+.crp form.notify input { flex:1; min-width: 220px; font: inherit; padding: 12px 14px; border:1px solid var(--rule);
+  border-radius: 9px; background: var(--surface); color: var(--ink); }
+.crp form.notify input:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+.crp .btn { font-family: var(--sans); font-weight:600; font-size:1rem; padding: 12px 22px; border-radius:9px;
+  border:1px solid transparent; background: var(--accent); color:#fff; cursor:pointer; }
+:root[data-theme="dark"] .crp .btn, @media (prefers-color-scheme: dark){ .crp .btn{ color:#14161B; } }
+.crp .btn:hover{ background: var(--accent-ink); }
+.crp .notify-note { font-size:0.82rem; color: var(--ink-3); margin-top:12px; }
+.crp .notify-ok { display:none; font-family: var(--serif); font-size:1.05rem; color: var(--good); margin-top:18px; }
+
+/* ---------- footer ---------- */
+.crp footer.foot { border-top:1px solid var(--rule); background: var(--surface); }
+.crp .foot-inner { padding: 26px 0; color: var(--ink-2); font-size:0.85rem; }
+.crp .foot-inner .fine { color: var(--ink-3); font-size:0.78rem; margin-top:6px; }
+.crp .foot-inner b { color: var(--ink); }
+
+/* reveal */
+.crp .rv { opacity:0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+.crp .rv.in { opacity:1; transform:none; }
+@media (prefers-reduced-motion: reduce){ .crp .rv{ opacity:1; transform:none; transition:none; } .crp .meter i{ transition:none; } }
+
+.crp .tnum { font-variant-numeric: tabular-nums; }
+
+/* ---------- how a week works ---------- */
+.crp .loop { display:grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+@media (max-width:820px){ .crp .loop{ grid-template-columns:1fr 1fr; } }
+@media (max-width:520px){ .crp .loop{ grid-template-columns:1fr; } }
+.crp .step { border:1px solid var(--rule); border-radius:12px; padding:18px 16px; background:var(--surface); position:relative; }
+.crp .step .num { font-family:var(--mono); font-size:0.7rem; color:var(--ink-3); position:absolute; top:14px; right:14px; }
+.crp .step .who { font-family:var(--mono); font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; padding:2px 7px; border-radius:5px; display:inline-block; margin-bottom:10px; }
+.crp .step .who.human { color:var(--teal); border:1px solid var(--teal); }
+.crp .step .who.ai { color:var(--accent); border:1px solid var(--accent); }
+.crp .step h3 { font-size:1.02rem; margin:0 0 6px; }
+.crp .step p { font-size:0.85rem; color:var(--ink-2); margin:0; }
+
+/* ---------- seminar ---------- */
+.crp .sem-grid { display:grid; grid-template-columns: 1.05fr 0.95fr; gap: var(--gap); align-items:start; }
+@media (max-width:820px){ .crp .sem-grid{ grid-template-columns:1fr; } }
+.crp .sem-scene { border:1px solid var(--rule); border-radius:14px; overflow:hidden; background:var(--surface); }
+.crp .sem-scene .top { padding:12px 16px; border-bottom:1px solid var(--rule); background:var(--raise); font-family:var(--mono); font-size:0.66rem; text-transform:uppercase; letter-spacing:0.09em; color:var(--teal); }
+.crp .sem-scene .body { padding:20px; }
+.crp .sem-q { font-family:var(--serif); font-size:1.12rem; line-height:1.42; border-left:3px solid var(--teal); padding-left:15px; margin:0 0 20px; }
+.crp .turn { margin:0 0 15px; }
+.crp .turn .spk { font-family:var(--mono); font-size:0.64rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-3); }
+.crp .turn.instructor .spk { color:var(--teal); }
+.crp .turn p { font-family:var(--serif); font-size:0.97rem; line-height:1.45; margin:3px 0 0; color:var(--ink); }
+.crp .sem-points { list-style:none; padding:0; margin:0; }
+.crp .sem-points li { padding:13px 0; border-top:1px solid var(--rule); font-size:0.9rem; color:var(--ink-2); }
+.crp .sem-points li:first-child{ border-top:0; padding-top:0; }
+.crp .sem-points b { color:var(--ink); font-weight:600; display:block; margin-bottom:2px; }
+
+/* ---------- curriculum ---------- */
+.crp .curric { display:grid; grid-template-columns:1fr 1fr; gap: var(--gap); align-items:start; }
+@media (max-width:820px){ .crp .curric{ grid-template-columns:1fr; } }
+.crp .card2 { border:1px solid var(--rule); border-radius:12px; padding:22px; background:var(--surface); }
+.crp .card2 h3 { font-size:1.16rem; margin:0 0 4px; }
+.crp .card2 .sub { font-size:0.85rem; color:var(--ink-2); margin:0 0 16px; }
+.crp .band { display:flex; gap:14px; padding:12px 0; border-top:1px solid var(--rule); }
+.crp .band:first-of-type{ border-top:0; }
+.crp .band .g { font-family:var(--mono); font-size:0.72rem; color:var(--accent); white-space:nowrap; padding-top:3px; min-width:60px; letter-spacing:0.02em; }
+.crp .band .titles { font-family:var(--serif); font-size:0.98rem; color:var(--ink); }
+.crp .band .titles em { color:var(--ink); }
+.crp .ladder { list-style:none; padding:0; margin:0; }
+.crp .ladder li { display:flex; align-items:baseline; gap:14px; padding:9px 0; border-bottom:1px dotted var(--rule); }
+.crp .ladder li:last-child{ border-bottom:0; }
+.crp .ladder li .r { font-family:var(--mono); font-size:0.7rem; color:var(--ink-3); min-width:56px; }
+.crp .ladder li.here .r b { color:var(--accent); }
+.crp .ladder li .t { font-family:var(--serif); font-size:1.02rem; }
+.crp .ladder li.here .t { color:var(--accent); }
+
+/* ---------- progress snapshot ---------- */
+.crp .report { border:1px solid var(--rule); border-radius:14px; overflow:hidden; margin-top:26px; background:var(--surface); }
+.crp .report .rtop { padding:12px 18px; border-bottom:1px solid var(--rule); background:var(--raise); font-family:var(--mono); font-size:0.66rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-2); display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+.crp .report .rbody { display:grid; grid-template-columns:1.2fr 1fr; }
+@media (max-width:760px){ .crp .report .rbody{ grid-template-columns:1fr; } }
+.crp .report .half { padding:20px 22px; }
+.crp .report .half + .half { border-left:1px solid var(--rule); }
+@media (max-width:760px){ .crp .report .half + .half{ border-left:0; border-top:1px solid var(--rule); } }
+.crp .rlabel { font-family:var(--mono); font-size:0.64rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-3); margin:0 0 12px; }
+.crp .delta { font-family:var(--serif); font-size:1.6rem; font-weight:600; color:var(--good); }
+.crp .delta small { font-family:var(--sans); font-size:0.82rem; color:var(--ink-2); font-weight:400; }
+.crp .spark-area{ fill:var(--accent); opacity:0.12; }
+.crp .spark-line{ fill:none; stroke:var(--accent); stroke-width:2.4; stroke-linejoin:round; stroke-linecap:round; }
+.crp .spark-dot{ fill:var(--surface); stroke:var(--accent); stroke-width:2; }
+.crp .spark-end{ fill:var(--accent); }
+.crp .spark-lbl{ font-family:var(--mono); font-size:9px; fill:var(--ink-2); }
+.crp .spark-val{ font-family:var(--mono); font-size:9px; fill:var(--ink); font-weight:600; }
+.crp .rungs { list-style:none; padding:0; margin:0; }
+.crp .rungs li { display:flex; align-items:center; gap:10px; padding:6px 0; font-size:0.9rem; }
+.crp .rungs .box { width:17px; height:17px; border-radius:4px; border:1.5px solid var(--rule); display:inline-flex; align-items:center; justify-content:center; font-size:11px; line-height:1; color:#fff; flex:none; }
+.crp .rungs li.done .box { background:var(--good); border-color:var(--good); }
+.crp .rungs li.now .box { border-color:var(--accent); color:var(--accent); box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 20%, transparent); }
+.crp .rungs li.now .t { color:var(--accent); font-weight:600; }
+.crp .rungs li.todo { color:var(--ink-3); }
+.crp .rungs .t { font-family:var(--serif); }
+
+/* ---------- masthead link ---------- */
+.crp .mast-right { display:flex; align-items:baseline; gap:16px; }
+.crp .mast-link { font-family:var(--mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent); text-decoration:none; }
+.crp .mast-link:hover { text-decoration:underline; }
+@media (max-width:520px){ .crp .mast-meta{ display:none; } }
+
+/* ---------- FAQ ---------- */
+.crp .faq { max-width:760px; }
+.crp details.q { border-top:1px solid var(--rule); }
+.crp details.q:last-of-type{ border-bottom:1px solid var(--rule); }
+.crp details.q summary { list-style:none; cursor:pointer; padding:16px 34px 16px 0; position:relative; font-family:var(--serif); font-size:1.1rem; color:var(--ink); }
+.crp details.q summary::-webkit-details-marker{ display:none; }
+.crp details.q summary::after { content:"+"; position:absolute; right:4px; top:13px; font-family:var(--mono); font-size:1.4rem; color:var(--accent); }
+.crp details.q[open] summary::after { content:"\2013"; }
+.crp details.q .a { padding:0 34px 20px 0; color:var(--ink-2); font-size:0.96rem; line-height:1.6; }
+.crp details.q .a b { color:var(--ink); font-weight:600; }
+
+/* ---------- nav + anchors ---------- */
+.crp .mast-nav { display:flex; gap:22px; }
+.crp .mast-nav a { font-family:var(--sans); font-size:0.88rem; font-weight:500; color:var(--ink-2); text-decoration:none; }
+.crp .mast-nav a:hover { color:var(--accent); }
+@media (max-width:700px){ .crp .mast-nav{ display:none; } }
+.crp section[id]{ scroll-margin-top: 74px; }
+
+/* ---------- virtual classroom mockup ---------- */
+.crp .vroom { border:1px solid var(--rule); border-radius:16px; overflow:hidden; background:var(--raise); margin-bottom: var(--gap); }
+.crp .vroom-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 16px; border-bottom:1px solid var(--rule); background:var(--surface); font-family:var(--mono); font-size:0.66rem; letter-spacing:0.03em; color:var(--ink-2); flex-wrap:wrap; }
+.crp .vroom-live { display:inline-flex; align-items:center; gap:7px; color:var(--accent); text-transform:uppercase; letter-spacing:0.1em; }
+.crp .vroom-live .dot { width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent); }
+.crp .vroom-title em { color:var(--ink); font-style:italic; }
+.crp .vroom-body { display:grid; grid-template-columns: 1.5fr 1fr; }
+@media (max-width:680px){ .crp .vroom-body{ grid-template-columns:1fr; } }
+.crp .vroom-tiles { display:grid; grid-template-columns: repeat(3,1fr); gap:10px; padding:16px; }
+.crp .tile { border:1px solid var(--rule); border-radius:10px; aspect-ratio:4/3; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; background:var(--surface); position:relative; text-align:center; padding:6px; }
+.crp .tile .av { width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:0.8rem; font-weight:600; color:#fff; background: var(--c, var(--teal)); }
+.crp .tile .nm { font-size:0.74rem; color:var(--ink); font-weight:600; }
+.crp .tile .role { font-family:var(--mono); font-size:0.55rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-3); }
+.crp .tile.instr { border-color: color-mix(in srgb,var(--teal) 45%, var(--rule)); }
+.crp .tile.speaking { border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 22%,transparent); }
+.crp .tile .live-badge { position:absolute; top:6px; right:6px; font-family:var(--mono); font-size:0.5rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--accent); border:1px solid var(--accent); border-radius:4px; padding:1px 4px; }
+.crp .vroom-side { border-left:1px solid var(--rule); padding:16px 18px; background:var(--surface); }
+@media (max-width:680px){ .crp .vroom-side{ border-left:0; border-top:1px solid var(--rule); } }
+.crp .vroom-side-h { font-family:var(--mono); font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-3); margin:0 0 6px; }
+.crp .vroom-side-h + p { margin:0 0 16px; }
+.crp .vroom-passage { font-family:var(--serif); font-size:0.98rem; color:var(--ink); line-height:1.4; }
+.crp .vroom-passage mark { background:var(--mark); color:var(--mark-ink); padding:0 2px; }
+.crp .vroom-q { font-family:var(--serif); font-size:1.04rem; color:var(--teal); line-height:1.4; }
+
+/* ---------- instructors ---------- */
+.crp .instr-grid { display:grid; grid-template-columns: repeat(2,1fr); gap: var(--gap); }
+@media (max-width:700px){ .crp .instr-grid{ grid-template-columns:1fr; } }
+.crp .icard { border:1px solid var(--rule); border-radius:12px; padding:22px; background:var(--surface); }
+.crp .icard h3 { font-size:1.12rem; margin:0 0 7px; }
+.crp .icard p { font-size:0.92rem; color:var(--ink-2); margin:0; }
+
+/* ---------- hero illustration: an annotated page ---------- */
+.crp .hero .wrap { display:grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(28px,5vw,56px); align-items:center; }
+@media (max-width:860px){ .crp .hero .wrap{ grid-template-columns:1fr; } }
+.crp .page-illo { display:flex; justify-content:center; }
+.crp .page { width:100%; max-width:420px; background: var(--raise); border:1px solid var(--rule); border-radius:10px; padding:26px 26px 24px; box-shadow: 0 22px 46px -26px rgba(0,0,0,.45); transform: rotate(-1.3deg); position:relative; }
+.crp .page::before { content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--accent); opacity:.55; border-radius:10px 0 0 10px; }
+.crp .page-ch { font-family:var(--mono); font-size:0.6rem; text-transform:uppercase; letter-spacing:0.16em; color:var(--ink-3); }
+.crp .page-line { font-family:var(--serif); font-size:1.02rem; line-height:1.72; margin:10px 0 0; color:var(--ink); }
+.crp .page-line.dim { color:var(--ink-3); }
+.crp .page .hl { background: linear-gradient(transparent 10%, var(--mark) 10% 88%, transparent 88%); color:var(--mark-ink); }
+.crp .page .ul { border-bottom:2px solid var(--accent); padding-bottom:1px; }
+.crp .margin-note { font-family:var(--serif); font-style:italic; font-size:0.82rem; color:var(--teal); margin:12px 0 0; padding-left:14px; border-left:2px solid color-mix(in srgb,var(--teal) 45%, var(--rule)); }
+.crp .page-q { font-family:var(--serif); font-style:italic; color:var(--accent); font-size:0.96rem; margin:16px 0 0; padding-left:18px; position:relative; }
+.crp .page-q::before { content:"?"; position:absolute; left:0; font-family:var(--mono); font-weight:700; }
+
+/* ---------- bookshelf ---------- */
+.crp .shelf { display:flex; align-items:flex-end; gap:6px; margin:0 0 18px; padding-bottom:10px; border-bottom:1px solid var(--rule); overflow-x:auto; }
+.crp .spine { writing-mode: vertical-rl; text-orientation: mixed; background:var(--c,var(--teal)); color:#fff; font-family:var(--serif); font-size:0.62rem; padding:9px 5px; border-radius:2px 2px 0 0; height:var(--h,70px); display:flex; align-items:center; justify-content:center; white-space:nowrap; flex:none; box-shadow: inset -2px 0 0 rgba(0,0,0,.12); }
+
+/* ---------- application steps ---------- */
+.crp .steps3 { display:grid; grid-template-columns: repeat(3,1fr); gap:14px; }
+@media (max-width:700px){ .crp .steps3{ grid-template-columns:1fr; } }
+
+/* ---------- founding-rate tag ---------- */
+.crp .founding-tag { display:inline-block; font-family:var(--mono); font-size:0.62rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent); border:1px solid var(--accent); border-radius:999px; padding:3px 10px; vertical-align:middle; margin-left:8px; }
+</style>
+
+<div class="crp">
+
+  <!-- masthead -->
+  <div class="masthead"><div class="wrap mast-inner">
+    <span class="logo">The Close&nbsp;Reading <span class="mark-red">Program</span></span>
+    <nav class="mast-nav">
+      <a href="#how">How it works</a>
+      <a href="#seminar">Seminar</a>
+      <a href="#curriculum">Curriculum</a>
+      <a href="#instructors">Instructors</a>
+      <a href="#admissions">Admissions</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div></div>
+
+  <!-- hero -->
+  <header class="hero"><div class="wrap">
+    <div class="hero-text">
+      <p class="eyebrow">Live online seminars · Grades 4–12</p>
+      <h1>We teach kids to read <span class="u">whole, hard books</span>—and we can see them doing it.</h1>
+      <p class="standfirst">Students read demanding full-length books about two grade levels early, mark them up by hand, and defend their thinking in small, live online seminars. Between seminars, an AI engine reads what they wrote and what they marked—and gives feedback specific enough to drive a real revision.</p>
+      <div class="pill-row">
+        <span class="pill"><b>Deep reading</b>, not "writing tips"</span>
+        <span class="pill"><b>Progress</b> you can see, not just claimed</span>
+        <span class="pill">As serious as their <b>math program</b></span>
+      </div>
+    </div>
+    <div class="page-illo" aria-hidden="true">
+      <div class="page">
+        <span class="page-ch">Frankenstein · ch. 5</span>
+        <p class="page-line">It was on a dreary night of November that I beheld the <span class="hl">accomplishment of my toils</span>.</p>
+        <p class="page-line">With an anxiety that almost amounted to agony, I collected the instruments of life around me, that I might <span class="ul">infuse a spark of being</span> into the lifeless thing.</p>
+        <p class="page-line dim">…the rain pattered dismally against the panes, and my candle was nearly burnt out…</p>
+        <div class="margin-note">"toils" — he sounds <em>proud</em>, one line before the horror hits. Why?</div>
+        <div class="page-q">Is Victor a creator, or a thief of life?</div>
+      </div>
+    </div>
+  </div></header>
+
+  <!-- WHY IT MATTERS -->
+  <section id="why"><div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">Why it matters</p>
+      <h2>When machines can read and write for us, doing it yourself becomes the rarer skill.</h2>
+      <p>Attention is getting shorter and text is getting easier to outsource. The children who can still sit with a hard book, follow a long argument, and write down what they actually think will have an advantage that compounds for the rest of their lives. That is the whole reason this program exists.</p>
+    </div>
+    <div class="pillars rv">
+      <div class="pillar">
+        <h3>Reading rewires attention</h3>
+        <p>Finishing a demanding book trains the sustained focus that scrolling quietly erodes—a workout for the part of the mind school rarely exercises.</p>
+      </div>
+      <div class="pillar">
+        <h3>Writing is thinking</h3>
+        <p>You don't fully know what you think until you try to write it clearly. Building and defending an argument is the skill hiding underneath every other academic one.</p>
+      </div>
+      <div class="pillar">
+        <h3>It compounds</h3>
+        <p>Strong readers and writers do better across every subject, in admissions, and at work. Few advantages start this early or last this long.</p>
+      </div>
+    </div>
+    <div class="rv" style="margin-top:clamp(24px,3vw,38px);border:1px solid var(--rule);border-radius:12px;padding:20px 22px;background:var(--surface)">
+      <p class="rlabel">What the research links to strong reading</p>
+      <p style="margin:0;color:var(--ink-2);max-width:70ch">Decades of studies connect consistent, advanced reading with <b>stronger grades across subjects</b>, <b>larger vocabulary and higher verbal reasoning</b>, sharper <b>communication</b>, and better long-run outcomes in <b>education, earnings, and health</b>. Few childhood habits predict where a student ends up as reliably as how much and how deeply they read.</p>
+      <p style="margin:8px 0 0;font-size:0.78rem;color:var(--ink-3)">These are associations from published research—reading is a major contributing factor, not the only one.</p>
+    </div>
+  </div></section>
+
+  <!-- HOW A WEEK WORKS -->
+  <section id="how"><div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">How a week works</p>
+      <h2>One weekly loop. Humans do the thinking work; AI does the grind.</h2>
+      <p>Every week runs the same rhythm. The parts that need a person—discussion, judgment, mentorship—stay human. The tireless feedback-and-revision grind, historically too expensive to do well, is where the AI earns its keep.</p>
+    </div>
+    <div class="loop rv">
+      <div class="step"><span class="num tnum">01</span><span class="who human">Human</span><h3>Read &amp; annotate</h3><p>Students read a demanding full-length book—about two grades ahead—and mark up their own hardcopy as they go.</p></div>
+      <div class="step"><span class="num tnum">02</span><span class="who ai">AI</span><h3>Feedback &amp; revise</h3><p>The engine reads their draft and their annotations, gives specific feedback, and drives a real revision before seminar.</p></div>
+      <div class="step"><span class="num tnum">03</span><span class="who human">Human</span><h3>Live seminar</h3><p>6–10 students defend their reading out loud with a credentialed instructor. Un-fakeable, and the heart of the program.</p></div>
+      <div class="step"><span class="num tnum">04</span><span class="who human">Human</span><h3>Grade &amp; portfolio</h3><p>Holistic human grading, a mastery-ladder check, and one more entry in the portfolio parents watch grow.</p></div>
+    </div>
+
+    <div class="sec-head rv" style="margin-top:clamp(30px,4vw,46px)">
+      <p class="eyebrow">What a week asks</p>
+    </div>
+    <div class="vstrip rv">
+      <div class="vstat"><div class="k tnum">75–90 min</div><p>One live online seminar a week (a little shorter for grades 4–5).</p></div>
+      <div class="vstat"><div class="k tnum">50–120 pages</div><p>Reading a week, scaling with grade—a full book about every 3–5 weeks.</p></div>
+      <div class="vstat"><div class="k">1 draft → 1 revision</div><p>A piece of writing carried through a real revision cycle between seminars.</p></div>
+    </div>
+    <p class="rcaption" style="margin-top:12px">Roughly <b>3–4 hours of student time a week</b> in total. Typical targets—the exact load is set by grade and by the book.</p>
+  </div></section>
+
+  <!-- THE DEMO -->
+  <section><div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">See the engine work</p>
+      <h2>The same book. Two readers. The engine can tell them apart.</h2>
+      <p>Below is <em>real, unedited</em> output from the prototype feedback engine. Toggle between a student who read <em>The Giver</em> closely and one who read it for plot—then switch to a writing draft. Notice it never quizzes plot recall; it reads the quality of the thinking.</p>
+    </div>
+
+    <div class="console rv">
+      <div class="console-bar">
+        <div class="seg" role="tablist" aria-label="Demo mode">
+          <button role="tab" aria-selected="true" data-mode="reading">Deep reading</button>
+          <button role="tab" aria-selected="false" data-mode="writing">Writing</button>
+        </div>
+        <span class="runtag" id="runtag"><span class="dot">●</span> gpt-oss-120b · local · unedited</span>
+      </div>
+
+      <!-- READING -->
+      <div class="panel" id="panel-reading">
+        <div class="src">
+          <div class="rtoggle" role="tablist" aria-label="Which reader">
+            <button role="tab" aria-selected="true" data-reader="deep">A close reader</button>
+            <button role="tab" aria-selected="false" data-reader="shallow">A plot reader</button>
+          </div>
+          <p class="rcaption" id="reader-caption"></p>
+          <p class="col-label">The reader's marks · <em>The Giver</em>, ch. 1–3</p>
+          <div id="marks"></div>
+          <p class="col-label" style="margin-top:22px">Their questions</p>
+          <ul class="qlist" id="questions"></ul>
+        </div>
+        <div class="read">
+          <p class="col-label">What the engine read in it</p>
+          <div class="overall" id="r-overall"></div>
+          <div class="scores" id="r-scores"></div>
+          <p class="col-label">Feedback on the thinking</p>
+          <div class="fb" id="r-fb"></div>
+          <div class="seminar">
+            <p class="h">◆ Socratic prompts — for the human instructor</p>
+            <ol id="r-seminar"></ol>
+          </div>
+          <div class="nextstep" id="r-next"></div>
+        </div>
+      </div>
+
+      <!-- WRITING -->
+      <div class="panel" id="panel-writing" hidden>
+        <div class="src">
+          <p class="col-label">The draft · grade 7, expository</p>
+          <div class="essay" id="w-essay"></div>
+        </div>
+        <div class="read">
+          <p class="col-label">What the engine read in it</p>
+          <div class="overall" id="w-overall"></div>
+          <div class="scores" id="w-scores"></div>
+          <p class="col-label">Revision suggestions — tied to real sentences</p>
+          <div class="fb" id="w-fb"></div>
+          <div class="minilesson" id="w-mini"></div>
+          <div class="nextstep" id="w-next"></div>
+        </div>
+      </div>
+    </div>
+    <p class="rcaption" style="text-align:center;margin-top:16px">Scores run 1–4. A <b>4</b> is deliberately rare—reserved for reading that opens the text for others—so most strong grade-level work tops out at 3. The engine is built <em>not</em> to inflate.</p>
+  </div></section>
+
+  <!-- THE LIVE SEMINAR -->
+  <section id="seminar"><div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow teal">The core of the program</p>
+      <h2>The part an AI can't do—on purpose.</h2>
+      <p>Between seminars, the engine hands the instructor sharp questions drawn from each student's own annotations—the ones you saw above. Then the humans take over: a small group meets live, on video, and defends their reading out loud. You can't outsource a live argument about a book, which is exactly why the seminar is the cheat-proof heart of the program—the part a worksheet or an app can never replace.</p>
+    </div>
+
+    <div class="vroom rv">
+      <div class="vroom-bar">
+        <span class="vroom-live"><span class="dot"></span> Live seminar</span>
+        <span class="vroom-title"><em>The Giver</em> · Grade 8 reading circle</span>
+        <span>8 students · 1 instructor</span>
+      </div>
+      <div class="vroom-body">
+        <div class="vroom-tiles">
+          <div class="tile instr"><span class="av" style="--c:#2C4A53">SS</span><span class="nm">Ms. Serrano</span><span class="role">Instructor</span></div>
+          <div class="tile speaking"><span class="live-badge">speaking</span><span class="av" style="--c:#A6382B">MA</span><span class="nm">Maya</span></div>
+          <div class="tile"><span class="av" style="--c:#3f6b4a">DV</span><span class="nm">Devin</span></div>
+          <div class="tile"><span class="av" style="--c:#4a4668">RY</span><span class="nm">Riya</span></div>
+          <div class="tile"><span class="av" style="--c:#7a5c3e">TH</span><span class="nm">Theo</span></div>
+          <div class="tile"><span class="av" style="--c:#2f6d78">JA</span><span class="nm">Jae</span></div>
+          <div class="tile"><span class="av" style="--c:#8a5a2b">EL</span><span class="nm">Ellie</span></div>
+          <div class="tile"><span class="av" style="--c:#5a5f6a">NO</span><span class="nm">Noah</span></div>
+          <div class="tile"><span class="av" style="--c:#6b3a55">PR</span><span class="nm">Priya</span></div>
+        </div>
+        <div class="vroom-side">
+          <p class="vroom-side-h">Today's text</p>
+          <p class="vroom-passage">"…the community was so meticulous in its use of <mark>language</mark>."</p>
+          <p class="vroom-side-h">On the table</p>
+          <p class="vroom-q">Is the community lying to its people—or is it something worse?</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sem-grid rv">
+      <div class="sem-scene">
+        <div class="top">◆ Seminar in session · <em>The Giver</em> · grade 8 · 8 students</div>
+        <div class="body">
+          <p class="sem-q">"Lowry uses gentle words—'release,' 'Sameness'—for frightening things. Is the community lying to its people, or is it something worse?"</p>
+          <div class="turn"><span class="spk">Maya</span><p>Worse than lying. Nobody's being tricked—they chose these words together. The whole community agreed not to know.</p></div>
+          <div class="turn"><span class="spk">Devin</span><p>But Jonas sees the apple change and no one else does. So the words work on almost everyone. Maybe the language only holds if everyone stays the same.</p></div>
+          <div class="turn instructor"><span class="spk">Instructor</span><p>Hold that—Devin just tied the language to "Sameness." Take us to a line where the words start to fail.</p></div>
+        </div>
+      </div>
+      <ul class="sem-points">
+        <li><b>Human-led and human-graded.</b> A credentialed instructor runs the discussion and grades holistically. The AI never joins and never simulates it.</li>
+        <li><b>Cheat-proof by design.</b> You can annotate with help; you cannot fake defending your reading live, in front of peers, in real time.</li>
+        <li><b>Small on purpose.</b> 6–10 students, so every child has to speak—and be heard.</li>
+        <li><b>The AI is prep, not participant.</b> It gives the instructor better opening questions from each student's marks. The thinking stays the students'.</li>
+      </ul>
+    </div>
+    <p class="rcaption" style="margin-top:16px">The room and exchange above illustrate a live, human-led online seminar—an illustration, not real students or AI output. The AI's only role here is handing the instructor the questions.</p>
+  </div></section>
+
+  <!-- THE CURRICULUM -->
+  <section id="curriculum"><div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">The curriculum</p>
+      <h2>Two ladders: harder books, and a real progression of writing.</h2>
+      <p>Reading runs about two grade levels ahead. Writing climbs a public mastery ladder—so "your child passed Level 6: rhetorical analysis" means something specific and earned.</p>
+    </div>
+    <div class="curric rv">
+      <div class="card2">
+        <h3>The reading ladder</h3>
+        <p class="sub">Whole books across fiction <em>and</em> non-fiction—novels, memoir, narrative non-fiction, essays, and speeches—read ~2 grades ahead. Representative titles; the working list is set with the instructor.</p>
+        <div class="shelf" aria-hidden="true">
+          <span class="spine" style="--c:#A6382B;--h:66px">The Giver</span>
+          <span class="spine" style="--c:#2C4A53;--h:84px">The Odyssey</span>
+          <span class="spine" style="--c:#4a4668;--h:74px">Frankenstein</span>
+          <span class="spine" style="--c:#3f6b4a;--h:90px">Hamlet</span>
+          <span class="spine" style="--c:#8a5a2b;--h:70px">I Am Malala</span>
+          <span class="spine" style="--c:#6b3a55;--h:80px">The Fire Next Time</span>
+          <span class="spine" style="--c:#2f6d78;--h:72px">Beloved</span>
+        </div>
+        <div class="band"><span class="g">Gr 4–5</span><span class="titles"><em>The Giver</em> · <em>A Wrinkle in Time</em> · <em>Bomb</em> <span style="color:var(--ink-3)">(narrative non-fiction)</span></span></div>
+        <div class="band"><span class="g">Gr 6–8</span><span class="titles"><em>The Odyssey</em> · <em>To Kill a Mockingbird</em> · <em>I Am Malala</em> <span style="color:var(--ink-3)">(memoir)</span></span></div>
+        <div class="band"><span class="g">Gr 9–10</span><span class="titles"><em>Frankenstein</em> · <em>Lord of the Flies</em> · <em>Narrative of the Life of Frederick Douglass</em></span></div>
+        <div class="band"><span class="g">Gr 11–12</span><span class="titles"><em>Hamlet</em> · <em>Beloved</em> · <em>The Fire Next Time</em> <span style="color:var(--ink-3)">(Baldwin, essays)</span></span></div>
+      </div>
+      <div class="card2">
+        <h3>The writing mastery ladder</h3>
+        <p class="sub">Each rung is a form to master before the next. The engine scores every draft against the rung it's on.</p>
+        <ul class="ladder">
+          <li><span class="r tnum">Level 1</span><span class="t">Narrative</span></li>
+          <li><span class="r tnum">Level 2</span><span class="t">Descriptive</span></li>
+          <li><span class="r tnum">Level 3</span><span class="t">Expository</span></li>
+          <li><span class="r tnum">Level 4</span><span class="t">Literary response</span></li>
+          <li><span class="r tnum">Level 5</span><span class="t">Persuasive / argument</span></li>
+          <li class="here"><span class="r tnum"><b>Level 6</b></span><span class="t">Rhetorical analysis</span></li>
+          <li><span class="r tnum">Level 7</span><span class="t">Research &amp; synthesis</span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="rcaption" style="margin-top:18px;text-align:center;max-width:72ch;margin-inline:auto">Alongside both ladders we build <b>reading fluency and pace flexibility</b>—knowing when to skim, when to cruise, and when to slow right down. Not speed-reading for its own sake, but the stamina that lets a student take on more and read the hard parts closely.</p>
+  </div></section>
+
+  <!-- INSTRUCTORS -->
+  <section id="instructors"><div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow teal">Who teaches</p>
+      <h2>Who's in the room with your child.</h2>
+      <p>A seminar is only as good as the person leading it. We hold a high bar for every instructor—and because the AI carries the feedback grind, they spend their hours on discussion and mentorship, not paperwork.</p>
+    </div>
+    <div class="instr-grid rv">
+      <div class="icard"><h3>Credentialed in the humanities</h3><p>Experienced English teachers and graduate-level writers (MA / MFA and beyond)—people who read and write seriously themselves, and model what that looks like.</p></div>
+      <div class="icard"><h3>Trained to lead a seminar</h3><p>Subject knowledge isn't enough. Every instructor is trained specifically to run a Socratic discussion—to ask rather than lecture, and to draw out a room of 6–10.</p></div>
+      <div class="icard"><h3>The same teacher, over time</h3><p>Your child works with a consistent instructor who comes to know them as a reader and writer and mentors them up the ladder—not a rotating cast of strangers.</p></div>
+      <div class="icard"><h3>Chosen carefully, not gig-sourced</h3><p>Instructors are interviewed, sample-taught, and background-checked before they ever lead a session. This is a teaching role, held to a teaching standard.</p></div>
+    </div>
+  </div></section>
+
+  <!-- three pillars -->
+  <section><div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">Why it's different</p>
+      <h2>Built around the parts that actually make a reader.</h2>
+    </div>
+    <div class="pillars rv">
+      <div class="pillar">
+        <h3>Deep-reading identity</h3>
+        <p>The lead isn't "writing skills." It's kids wrestling with <em>Frankenstein</em> and <em>The Odyssey</em>—the whole book, early—and owning the word <b>reading</b>.</p>
+      </div>
+      <div class="pillar">
+        <h3>Progress you can see</h3>
+        <p>We check reading level with an independent assessment a few times a year, keep a public mastery ladder, and build a portfolio you can watch fill—so growth is shown, not just asserted.</p>
+      </div>
+      <div class="pillar">
+        <h3>Complement, not contest</h3>
+        <p>Many of our families already have math handled by a program they trust. We're the reading-and-writing counterpart—held to the same standard, on the humanities side.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- outcomes strip -->
+  <section><div class="wrap">
+    <div class="sec-head rv"><p class="eyebrow teal">What "observable" means</p>
+      <h2>You can see the reading happen.</h2></div>
+    <div class="vstrip rv">
+      <div class="vstat"><div class="k tnum">3× / year</div><p>An independent reading-level check a few times a year—scored by a neutral assessment, not by us.</p></div>
+      <div class="vstat"><div class="k">Level 6 ✓</div><p>A public mastery ladder: "your child passed rhetorical analysis." Concrete rungs they climb.</p></div>
+      <div class="vstat"><div class="k">The portfolio</div><p>An annotation portfolio in your child's own hand, showing the thinking deepen over the year.</p></div>
+    </div>
+
+    <div class="report rv">
+      <div class="rtop"><span>◆ Sample progress · one student, one year</span><span>sample report · illustration</span></div>
+      <div class="rbody">
+        <div class="half">
+          <p class="rlabel">Reading level (Lexile) · Fall → Spring</p>
+          <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px">
+            <span class="delta tnum">+170L</span><span class="delta"><small>950 → 1120</small></span>
+          </div>
+          <svg viewBox="0 0 320 130" width="100%" height="auto" role="img" aria-label="Lexile growth: 950 in fall, 1040 in winter, 1120 in spring">
+            <path class="spark-area" d="M30,100 L30,84 L155,55.2 L280,29.6 L280,100 Z"/>
+            <polyline class="spark-line" points="30,84 155,55.2 280,29.6"/>
+            <circle class="spark-dot" cx="30" cy="84" r="4"/>
+            <circle class="spark-dot" cx="155" cy="55.2" r="4"/>
+            <circle class="spark-end" cx="280" cy="29.6" r="5.5"/>
+            <text class="spark-val" x="30" y="76" text-anchor="middle">950</text>
+            <text class="spark-val" x="155" y="47" text-anchor="middle">1040</text>
+            <text class="spark-val" x="280" y="21" text-anchor="middle">1120</text>
+            <text class="spark-lbl" x="30" y="119" text-anchor="middle">Fall</text>
+            <text class="spark-lbl" x="155" y="119" text-anchor="middle">Winter</text>
+            <text class="spark-lbl" x="280" y="119" text-anchor="middle">Spring</text>
+          </svg>
+        </div>
+        <div class="half">
+          <p class="rlabel">Writing mastery ladder</p>
+          <ul class="rungs">
+            <li class="done"><span class="box">✓</span><span class="t">Narrative</span></li>
+            <li class="done"><span class="box">✓</span><span class="t">Descriptive</span></li>
+            <li class="done"><span class="box">✓</span><span class="t">Expository</span></li>
+            <li class="done"><span class="box">✓</span><span class="t">Literary response</span></li>
+            <li class="now"><span class="box">●</span><span class="t">Persuasive / argument</span></li>
+            <li class="todo"><span class="box"></span><span class="t">Rhetorical analysis</span></li>
+            <li class="todo"><span class="box"></span><span class="t">Research &amp; synthesis</span></li>
+          </ul>
+          <p style="font-size:0.8rem;color:var(--ink-3);margin:14px 0 0">14 pieces in the portfolio this year · next up: rhetorical analysis</p>
+        </div>
+      </div>
+    </div>
+    <p class="rcaption" style="margin-top:12px">A sample of how we'll show progress—an illustration, not real results yet. Reading level is scored by an independent assessment, not by us.</p>
+  </div></section>
+
+  <!-- ADMISSIONS -->
+  <section id="admissions"><div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow teal">How to join</p>
+      <h2>We admit students by application—and that's on purpose.</h2>
+      <p>A seminar works only when it's full of kids who want to be there and are ready to talk about books. We're selective not to be exclusive, but to protect what makes it work: a room of engaged, kind, curious peers. The application also helps us place your child at the right level.</p>
+    </div>
+    <div class="steps3 rv">
+      <div class="step"><span class="num tnum">01</span><h3>Apply with a short video</h3><p>Your child records 2–3 minutes talking about a book they love, or what they like to write. No script, no polish—we just want to meet a reader. A short writing sample is welcome but optional.</p></div>
+      <div class="step"><span class="num tnum">02</span><h3>A conversation &amp; trial seminar</h3><p>A friendly chat and a sample session to check the fit and find the right level—and your chance to interview us right back.</p></div>
+      <div class="step"><span class="num tnum">03</span><h3>Placement &amp; welcome</h3><p>Admitted students are matched into a cohort at the right level, with peers who are ready to dig in.</p></div>
+    </div>
+  </div></section>
+
+  <!-- FAQ -->
+  <section id="faq"><div class="wrap">
+    <div class="sec-head rv"><p class="eyebrow">Questions parents ask</p>
+      <h2>The honest answers.</h2></div>
+    <div class="faq rv">
+      <details class="q"><summary>Won't AI just let my child cheat?</summary>
+        <div class="a">It's the opposite of the risk. The <b>live seminar</b> is un-fakeable—your child has to defend their reading out loud, in front of peers, in real time. And we make the writing <b>process</b> observable: we keep draft history and a private sense of how your child writes, so a draft that doesn't match can be <b>flagged for a teacher to look at—never an automated accusation</b>. We do <b>not</b> use commercial "AI detectors"; falsely accusing a child is a line we won't cross.</div></details>
+      <details class="q"><summary>How is this different from a worksheet or skills program?</summary>
+        <div class="a">A worksheet drills a skill in isolation and moves on. We build <b>readers</b>: whole, demanding books read early, marked up by hand, and argued out loud—then real writing that climbs a mastery ladder. The difference shows up where it counts, in an <b>independent reading-level check a few times a year</b>—not in a stack of completed pages.</div></details>
+      <details class="q"><summary>How is this different from an AI tutor or chatbot?</summary>
+        <div class="a">An AI-only tutor tries to <b>replace</b> the teacher. We do the reverse: the AI handles the instant feedback-and-revision grind so a <b>credentialed instructor</b> can spend their time on discussion, judgment, and mentorship. The part that actually forms a reader—the seminar—is <b>always human</b>. The AI is a lever for the teacher, never a substitute for one.</div></details>
+      <details class="q"><summary>What's included for $245 a month?</summary>
+        <div class="a">Small, <b>live</b> online seminars (6–10 students), whole-book deep reading, a daily revision loop with real feedback, and a <b>credentialed instructor</b> who comes to know your child. Reading level is checked by an independent assessment through the year, so progress is something you can see—not a number we grade ourselves.</div></details>
+      <details class="q"><summary>Does this replace our math program?</summary>
+        <div class="a">No—it's the complement. Many of our families already have math handled by a program they love. Think of us as the reading-and-writing counterpart: <b>that program for math, us for reading and writing.</b></div></details>
+    </div>
+  </div></section>
+
+  <!-- CTA (mockup, view-only) -->
+  <section class="cta"><div class="wrap">
+    <p class="eyebrow rv">Founding cohort</p>
+    <div class="price rv"><span class="n tnum">$245</span><span class="p"> / month</span> <span class="founding-tag">Founding rate</span></div>
+    <p class="rv" style="margin:6px auto 0;color:var(--ink-3);font-size:0.85rem">An introductory rate for the founding cohort.</p>
+    <p class="rv" style="margin:14px auto 0;color:var(--ink-2)">A limited first cohort—seminars kept small (6–10 students) so every child is known and every voice is heard.</p>
+    <form class="notify rv" id="notify" novalidate>
+      <input type="email" placeholder="you@email.com" aria-label="Email" required>
+      <button class="btn" type="submit">Keep me posted</button>
+    </form>
+    <p class="notify-note rv">Preview only — this demo doesn't send or store anything. The real founding-cohort waitlist opens at launch.</p>
+    <p class="notify-ok" id="notify-ok">Noted—thanks for the look. (This is a preview: nothing was sent or stored.)</p>
+  </div></section>
+
+  <footer class="foot"><div class="wrap foot-inner">
+    <p><b>The Close Reading Program</b> — an early prototype demo, not an offer of enrollment.</p>
+    <p class="fine">The feedback shown above is genuine, unedited output from a local prototype model running on private hardware. No student data leaves the machine; the samples here are synthetic.</p>
+  </div></footer>
+</div>
+
+<script>
+(function(){
+  const READING = {
+    deep: {
+      caption: "R.K., grade 8 — chose five marks and three questions from their own copy.",
+      marks: [
+        {q:"It was almost December, and Jonas was beginning to be frightened.", n:"First line, but she says 'frightened' then takes it back and re-explains it. Why open on a feeling the narrator immediately corrects? Makes me not trust the calm.", tag:"observation"},
+        {q:"the community was so meticulous in its use of language", n:"They punish imprecise words. If language is this controlled, what words are they NOT allowed to have? Control disguised as politeness.", tag:"inference"},
+        {q:"apple… changed", n:"Jonas sees the apple 'change' and nobody else does. First crack — he can see something the others can't.", tag:"inference"},
+        {q:"release", n:"Used like it's a nice word, but the old and broken get 'released.' I bet it doesn't mean what it sounds like.", tag:"question"},
+        {q:"Sameness", n:"Capital S — they made it a proper noun, like a rule or a god. Connects to the no-color thing: it's all one system.", tag:"connection"}
+      ],
+      questions:[
+        "Why does Lowry hide the scary stuff inside pleasant words like 'release' instead of just telling us it's a dystopia?",
+        "If Jonas can see the apple change, is that a gift or a defect in a community built on everyone being the same?",
+        "Is the narrator on the community's side or ours? The calm tone feels like it's testing me."
+      ],
+      overall:"The reader consistently notices and interrogates Lowry's word choices, drawing thoughtful inferences about control and the cracks in the community's façade. The next move is to link each insight to exact textual evidence.",
+      scores:[
+        {name:"Textual Attention",score:3,lvl:"Proficient",just:"Flags the corrected word 'frightened' and asks why the narrator corrects it—regular attention to deliberate diction."},
+        {name:"Inference & Interpretation",score:3,lvl:"Proficient",just:"Reads the apple's brief change as the first crack in the community's sameness."},
+        {name:"Questioning & Curiosity",score:3,lvl:"Proficient",just:"Generates open, interpretive questions ('Why does Lowry hide the scary stuff…')."},
+        {name:"Connection & Synthesis",score:3,lvl:"Proficient",just:"Links the capitalized 'Sameness' to the no-color rule and language control—a systems view."},
+        {name:"Textual Grounding",score:3,lvl:"Proficient",just:"Anchors each claim in a specific marked phrase."}
+      ],
+      fb:[
+        {ref:'"…beginning to be frightened." — the narrator correcting the feeling', strong:"You caught a subtle authorial move: an immediate self-correction that signals unreliability.", push:"Ask why Lowry has the narrator self-correct here, and what that says about the community's control over emotion."},
+        {ref:'"apple… changed" — the first crack', strong:"You identified a pivotal moment that hints at something beneath sameness.", push:"Explore what the apple's change symbolizes for Jonas's perception and for seeing past imposed uniformity."},
+        {ref:'"release" — the euphemism', strong:"You generated a probing question about language masking a harsh reality.", push:"Link it to other euphemisms in the text and how such language shapes the community's acceptance of death."}
+      ],
+      seminar:[
+        "How does Lowry's careful control of language shape our perception of the community's values, and what do the gaps in that language reveal about power?",
+        "In what way does the apple changing serve as a portal for questioning 'Sameness,' and what does it suggest about individual perception?",
+        "Why might the narrator use a calm, clinical tone while inserting unsettling details—and how does that tension affect whose side we're on?"
+      ],
+      next:"In your next reading, record each insight with a direct quotation and note exactly how that evidence supports your inference or question."
+    },
+    shallow: {
+      caption: "T.M., grade 8 — same chapters, same assignment. Read for what happened.",
+      marks: [
+        {q:"Jonas was beginning to be frightened", n:"Jonas is scared.", tag:"observation"},
+        {q:"the Ceremony of Twelve", n:"This is when they get their jobs. It's coming up.", tag:"observation"},
+        {q:"his father was a Nurturer", n:"His dad takes care of babies.", tag:"observation"},
+        {q:"Lily", n:"Lily is his little sister. She talks a lot.", tag:"observation"}
+      ],
+      questions:[ "What job will Jonas get?", "How old is Lily?" ],
+      overall:"The reader is attending to the text at a surface level—marking key phrases but only restating what they say—and the questions focus on plot rather than meaning. The next move is to start asking why the author chose particular words or situations.",
+      scores:[
+        {name:"Textual Attention",score:2,lvl:"Developing",just:"Marks specific phrases but only notes literal meaning, without probing the author's choice of wording."},
+        {name:"Inference & Interpretation",score:1,lvl:"Emerging",just:"No inference is evident; all notes are simple observations."},
+        {name:"Questioning & Curiosity",score:1,lvl:"Emerging",just:"Both questions are factual (job, Lily's age) and don't explore tensions or themes."},
+        {name:"Connection & Synthesis",score:1,lvl:"Emerging",just:"The notes don't link the text to other ideas, texts, or broader concepts."},
+        {name:"Textual Grounding",score:2,lvl:"Developing",just:"The writing summarizes the chapters but offers no direct quotation or precise evidence."}
+      ],
+      fb:[
+        {ref:'"…beginning to be frightened." — Note: Jonas is scared.', strong:"You correctly identified a key emotional moment.", push:"Ask why Lowry describes the fear this way—what word choices hint at larger themes of control or conformity?"},
+        {ref:'Question: "What job will Jonas get?"', strong:"You noticed an important upcoming event, the Ceremony of Twelve.", push:"Turn it into an interpretive question: how might assigning everyone's job reveal the community's values or hidden anxieties?"},
+        {ref:'The plot-summary paragraph', strong:"You captured the main plot points clearly.", push:"Support each claim with a direct quote, then explain what that evidence suggests about the society's structure."}
+      ],
+      seminar:[
+        "How does describing the community without color shape our sense of control and conformity?",
+        "What might 'release' imply beyond its literal meaning, and how does its vague, repeated use shape the reader?",
+        "Does the Ceremony of Twelve work as a rite of passage or a mechanism of social order—and what tension comes from being both?"
+      ],
+      next:"When you annotate, pause after marking a passage and write one line asking WHY the author chose that word or detail—then look for evidence for your guess.",
+      note:"The engine also flagged: limited artifact — insufficient evidence to judge the deeper dimensions confidently."
+    }
+  };
+
+  const WRITING = {
+    essayTitle:"Why Honeybees Matter",
+    essayHTML:
+      "Honeybees are one of the most important insects in the world. Many people are scared of bees because they can sting you, but bees actually do a lot of good things for the planet and for humans.<br><br>"+
+      "The first reason honeybees are important is pollination. When a bee lands on a flower to get nectar, pollen sticks to its body, and then it carries the pollen to the next flower. A lot of the food we eat, like apples and almonds and blueberries, needs bees to grow. <span class='hl'>Some people say bees pollinate about a third of the food we eat.</span><br><br>"+
+      "Another reason bees matter is honey. <span class='hl'>Bees make honey to store food for the winter, but humans have collected honey for thousands of years.</span><br><br>"+
+      "<span class='hl'>Also bees are part of the ecosystem.</span> Other animals eat bees and if bees disappeared it would hurt the food chain.<br><br>"+
+      "In conclusion, honeybees are very important for pollination, honey, and the ecosystem, and we should protect them.",
+    overall:"Your essay does a solid job stating why honeybees matter and organizes the reasons into clear paragraphs. The next most important step is to strengthen the evidence so each reason feels convincing and grounded in facts.",
+    scores:[
+      {name:"Argument & Ideas",score:3,lvl:"Proficient",just:"States a clear claim and each paragraph adds a reason—there's genuine progression."},
+      {name:"Structure & Coherence",score:2,lvl:"Developing",just:"Follows a five-paragraph template with filler transitions like 'Also,' which feels formulaic."},
+      {name:"Evidence & Development",score:2,lvl:"Developing",just:"Offers facts but with no source and no explanation of why they matter."},
+      {name:"Voice & Style",score:3,lvl:"Proficient",just:"A personal, consistent tone ('Many people are scared of bees…') gives it a recognizable voice."},
+      {name:"Sentence Craft",score:2,lvl:"Developing",just:"Sentences are mostly short and uniform, with little variation in length or structure."},
+      {name:"Mechanics",score:3,lvl:"Proficient",just:"Spelling and punctuation are generally correct; nothing impedes meaning."}
+    ],
+    fb:[
+      {ref:'Priority 1 · evidence', q:"Some people say bees pollinate about a third of the food we eat.", issue:"The statistic is vague and lacks a source or explanation of its relevance.", push:"Find a reputable source for the figure and add a sentence explaining how it supports the specific foods you mention."},
+      {ref:'Priority 2 · structure', q:"Also bees are part of the ecosystem.", issue:"'Also' is filler and the paragraph doesn't link to the previous idea.", push:"Use a purposeful transition that ties the ecosystem point to what came before ('Beyond pollination, bees also sustain the food chain because…')."},
+      {ref:'Priority 3 · sentence craft', q:"Bees make honey to store food for the winter, but humans have collected honey for thousands of years.", issue:"A flat compound sentence with little rhythmic variety.", push:"Vary the rhythm—split it or add a clause: 'Bees make honey to survive winter; humans, meanwhile, have harvested it for millennia.'"}
+    ],
+    mini:{focus:"Using specific, explained evidence", body:"Strong evidence does three things: it comes from a credible source, it's specific enough to trust, and you explain how it supports your claim. Find a reliable fact, cite where it's from, then add a sentence connecting it to your point."},
+    next:"Add one specific, sourced statistic about how much of our food supply depends on bees, and write a sentence linking it to the foods you list (apples, almonds, blueberries)."
+  };
+
+  const $ = s => document.querySelector(s);
+  function meter(score, insuff){
+    let h = '<div class="meter">';
+    for(let i=1;i<=4;i++){ h += `<i class="${insuff?'insuff':(i<=score?'on':'')}"></i>`; }
+    return h + '</div>';
+  }
+  function renderScores(el, scores){
+    el.innerHTML = scores.map(s=>`
+      <div class="score">
+        <span class="name">${s.name}</span>
+        <span class="lvl tnum">${s.insuff?'—':s.score}/4 · ${s.lvl||''}</span>
+        ${meter(s.score, s.insuff)}
+        <span class="just">${s.just}</span>
+      </div>`).join('');
+    // trigger meter transition
+    requestAnimationFrame(()=>{ el.querySelectorAll('.meter i').forEach(i=>i.style.transitionDelay=(Math.random()*120)+'ms'); });
+  }
+
+  function renderReading(which){
+    const d = READING[which];
+    $('#reader-caption').textContent = d.caption;
+    $('#marks').innerHTML = d.marks.map(m=>`
+      <div class="mark-card">
+        <div class="q"><span class="hl">${m.q}</span><span class="tag">${m.tag}</span></div>
+        <p class="n">${m.n}</p>
+      </div>`).join('');
+    $('#questions').innerHTML = d.questions.map(q=>`<li>${q}</li>`).join('');
+    $('#r-overall').textContent = d.overall;
+    renderScores($('#r-scores'), d.scores);
+    $('#r-fb').innerHTML = d.fb.map(f=>`
+      <div class="fb-item">
+        <div class="ref">${f.ref}</div>
+        <p class="strong"><b>Strong —</b> ${f.strong}</p>
+        <p class="push"><b>Push —</b> ${f.push}</p>
+      </div>`).join('');
+    $('#r-seminar').innerHTML = d.seminar.map(s=>`<li>${s}</li>`).join('');
+    $('#r-next').innerHTML = `<b>Next step for the reader</b>${d.next}` + (d.note?`<br><br><span style="color:var(--ink-2);font-size:0.85rem">⚑ ${d.note}</span>`:'');
+  }
+
+  function renderWriting(){
+    const w = WRITING;
+    $('#w-essay').innerHTML = `<span class="ttl">${w.essayTitle}</span>${w.essayHTML}`;
+    $('#w-overall').textContent = w.overall;
+    renderScores($('#w-scores'), w.scores);
+    $('#w-fb').innerHTML = w.fb.map(f=>`
+      <div class="fb-item">
+        <div class="ref">${f.ref}</div>
+        <div class="q" style="font-family:var(--serif);margin:6px 0"><span class="hl">${f.q}</span></div>
+        <p class="strong" style="color:var(--ink-2)">${f.issue}</p>
+        <p class="push"><b>Do —</b> ${f.push}</p>
+      </div>`).join('');
+    $('#w-mini').innerHTML = `<p class="h">Mini-lesson</p><div class="f">${w.mini.focus}</div><p>${w.mini.body}</p>`;
+    $('#w-next').innerHTML = `<b>Next draft</b>${w.next}`;
+  }
+
+  // mode tabs
+  document.querySelectorAll('.seg [role=tab]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('.seg [role=tab]').forEach(x=>x.setAttribute('aria-selected', x===b));
+      const m = b.dataset.mode;
+      $('#panel-reading').hidden = m!=='reading';
+      $('#panel-writing').hidden = m!=='writing';
+      $('#runtag').innerHTML = m==='reading'
+        ? '<span class="dot">●</span> gpt-oss-120b · local · unedited'
+        : '<span class="dot">●</span> gpt-oss-120b · local · unedited';
+    });
+  });
+  // reader toggle
+  document.querySelectorAll('.rtoggle [role=tab]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('.rtoggle [role=tab]').forEach(x=>x.setAttribute('aria-selected', x===b));
+      renderReading(b.dataset.reader);
+    });
+  });
+
+  // notify mockup
+  $('#notify').addEventListener('submit', e=>{ e.preventDefault(); $('#notify').style.display='none'; $('.notify-note').style.display='none'; $('#notify-ok').style.display='block'; });
+
+  // reveal
+  const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }),{threshold:.12});
+  document.querySelectorAll('.crp .rv').forEach(el=>io.observe(el));
+
+  renderReading('deep');
+  renderWriting();
+})();
+</script>
+
+</body>
+</html>
