@@ -392,6 +392,22 @@
 .crp .claim { border:1px solid var(--rule); border-top:3px solid var(--accent); border-radius:10px; padding:15px 14px; background:var(--surface); }
 .crp .claim b { display:block; font-family:var(--serif); font-size:1.04rem; color:var(--ink); margin-bottom:4px; }
 .crp .claim span { font-size:0.82rem; color:var(--ink-2); line-height:1.45; }
+
+/* ---------- evidence charts ---------- */
+.crp .charts { display:grid; grid-template-columns: 1.25fr 1fr; gap: var(--gap); }
+@media (max-width:820px){ .crp .charts{ grid-template-columns:1fr; } }
+.crp .chart { border:1px solid var(--rule); border-radius:12px; padding:20px 22px; background:var(--surface); display:flex; flex-direction:column; }
+.crp .chart h3 { font-size:1.06rem; margin:0 0 3px; }
+.crp .chart .csub { font-size:0.82rem; color:var(--ink-2); margin:0 0 14px; }
+.crp .chart .src { font-family:var(--mono); font-size:0.63rem; color:var(--ink-3); margin-top:auto; padding-top:14px; line-height:1.4; }
+.crp .hbar { display:grid; grid-template-columns: 92px 1fr 52px; align-items:center; gap:10px; margin:8px 0; }
+.crp .hbar .lab { font-size:0.78rem; color:var(--ink-2); text-align:right; }
+.crp .hbar .track { background:var(--paper); border:1px solid var(--rule); border-radius:5px; height:19px; overflow:hidden; }
+.crp .hbar .fill { height:100%; background:var(--accent); border-radius:4px 0 0 4px; min-width:4px; }
+.crp .hbar.low .fill { opacity:0.5; }
+.crp .hbar .val { font-family:var(--mono); font-size:0.74rem; color:var(--ink); font-variant-numeric:tabular-nums; }
+.crp .bigstat { font-family:var(--serif); font-size:1.12rem; color:var(--ink); margin:16px 0 0; line-height:1.4; }
+.crp .bigstat b { color:var(--accent); }
 </style>
 
 <div class="crp">
@@ -413,12 +429,11 @@
   <header class="hero"><div class="wrap">
     <div class="hero-text">
       <p class="eyebrow">Live online seminars · Grades 4–12</p>
-      <h1>We teach kids to read <span class="u">whole, hard books</span>—and we can see them doing it.</h1>
+      <h1>Where kids read <span class="u">real books</span>—deeply—and grow into real writers.</h1>
       <p class="standfirst">Students read demanding full-length books about two grade levels early, mark them up by hand, and defend their thinking in small, live online seminars. Between seminars, an AI engine reads what they wrote and what they marked—and gives feedback specific enough to drive a real revision.</p>
       <div class="pill-row">
         <span class="pill"><b>Deep reading</b>, not "writing tips"</span>
         <span class="pill"><b>Progress</b> you can see, not just claimed</span>
-        <span class="pill">As serious as their <b>math program</b></span>
       </div>
     </div>
     <div class="page-illo" aria-hidden="true">
@@ -460,6 +475,37 @@
       <div class="pillar">
         <h3>It compounds</h3>
         <p>Strong readers and writers do better across every subject, in admissions, and at work. Few advantages start this early or last this long.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- THE EVIDENCE -->
+  <section id="evidence"><div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">The evidence</p>
+      <h2>Not our opinion—the research.</h2>
+      <p>Two findings that shape how we teach: the more children read, the higher they tend to score—and a lifelong reading habit is linked to a longer, healthier life.</p>
+    </div>
+    <div class="charts rv">
+      <div class="chart" role="img" aria-label="Bar chart: minutes of reading per day rise steeply with reading-test percentile, from 1.6 minutes at the 10th percentile to 90.7 minutes at the 98th.">
+        <h3>The more kids read, the higher they score</h3>
+        <p class="csub">Minutes of reading a day (outside school), by reading-test percentile.</p>
+        <div class="hbar"><span class="lab">98th pct</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="val">90.7</span></div>
+        <div class="hbar"><span class="lab">90th pct</span><div class="track"><div class="fill" style="width:44.5%"></div></div><span class="val">40.4</span></div>
+        <div class="hbar"><span class="lab">70th pct</span><div class="track"><div class="fill" style="width:23.9%"></div></div><span class="val">21.7</span></div>
+        <div class="hbar"><span class="lab">50th pct</span><div class="track"><div class="fill" style="width:14.2%"></div></div><span class="val">12.9</span></div>
+        <div class="hbar low"><span class="lab">20th pct</span><div class="track"><div class="fill" style="width:3.4%"></div></div><span class="val">3.1</span></div>
+        <div class="hbar low"><span class="lab">10th pct</span><div class="track"><div class="fill" style="width:1.8%"></div></div><span class="val">1.6</span></div>
+        <p class="csub" style="margin:14px 0 0">In words: the strongest readers take in ~4.7 million words a year; the weakest, ~51,000—about <b>90× more</b>.</p>
+        <p class="src">Anderson, Wilson &amp; Fielding (1988) · Reading Research Quarterly</p>
+      </div>
+      <div class="chart" role="img" aria-label="Book readers had about 20 percent lower risk of dying over a 12-year study, a 23-month survival advantage.">
+        <h3>Readers live longer</h3>
+        <p class="csub">Chance of dying during a 12-year study, vs. non-readers.</p>
+        <div class="hbar low"><span class="lab">Non-readers</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="val">100%</span></div>
+        <div class="hbar"><span class="lab">Book readers</span><div class="track"><div class="fill" style="width:80%"></div></div><span class="val">80%</span></div>
+        <p class="bigstat">About <b>20% lower risk</b>—a <b>+23-month</b> survival advantage.</p>
+        <p class="src">Bavishi, Slade &amp; Levy (2016), Yale · Social Science &amp; Medicine · 3,635 adults over 12 yrs</p>
       </div>
     </div>
   </div></section>
