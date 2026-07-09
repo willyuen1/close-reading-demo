@@ -5,11 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Close Reading Program</title>
 <meta name="description" content="An online deep-reading & writing program for grades 4-12: whole books read two grades early, live seminars, and instant AI feedback between them.">
-<style>
-  html,body{margin:0;padding:0}
-  body{background:#E8E9E3}
-  @media (prefers-color-scheme: dark){ body{background:#14161B} }
-</style>
+<style>html,body{margin:0;padding:0}body{background:#E8E9E3}@media (prefers-color-scheme: dark){body{background:#14161B}}</style>
 </head>
 <body>
 <style>
@@ -388,6 +384,14 @@
 
 /* ---------- founding-rate tag ---------- */
 .crp .founding-tag { display:inline-block; font-family:var(--mono); font-size:0.62rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent); border:1px solid var(--accent); border-radius:999px; padding:3px 10px; vertical-align:middle; margin-left:8px; }
+
+/* ---------- research claims strip ---------- */
+.crp .claims { display:grid; grid-template-columns: repeat(5,1fr); gap:12px; margin: 4px 0 0; }
+@media (max-width:860px){ .crp .claims{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:480px){ .crp .claims{ grid-template-columns:1fr; } }
+.crp .claim { border:1px solid var(--rule); border-top:3px solid var(--accent); border-radius:10px; padding:15px 14px; background:var(--surface); }
+.crp .claim b { display:block; font-family:var(--serif); font-size:1.04rem; color:var(--ink); margin-bottom:4px; }
+.crp .claim span { font-size:0.82rem; color:var(--ink-2); line-height:1.45; }
 </style>
 
 <div class="crp">
@@ -433,10 +437,18 @@
   <section id="why"><div class="wrap">
     <div class="sec-head rv">
       <p class="eyebrow">Why it matters</p>
-      <h2>When machines can read and write for us, doing it yourself becomes the rarer skill.</h2>
-      <p>Attention is getting shorter and text is getting easier to outsource. The children who can still sit with a hard book, follow a long argument, and write down what they actually think will have an advantage that compounds for the rest of their lives. That is the whole reason this program exists.</p>
+      <h2>Few childhood habits shape a whole life like reading well.</h2>
+      <p>When machines can read and write for us, doing it yourself becomes the rarer, more valuable skill—and the payoff isn't just better English grades. Decades of research tie a strong, advanced reading habit to outcomes that follow a child for the rest of their life:</p>
     </div>
-    <div class="pillars rv">
+    <div class="claims rv">
+      <div class="claim"><b>Better grades</b><span>Across every subject, not just English.</span></div>
+      <div class="claim"><b>Higher IQ</b><span>Reading skill is linked to gains in verbal—and even nonverbal—ability.</span></div>
+      <div class="claim"><b>Higher income</b><span>Literacy tracks strongly with lifetime earnings.</span></div>
+      <div class="claim"><b>Better quality of life</b><span>Stronger wellbeing and health—studies even link book-reading to living longer.</span></div>
+      <div class="claim"><b>Sharper communication</b><span>A larger vocabulary and clearer, more persuasive expression.</span></div>
+    </div>
+    <p class="rcaption" style="margin-top:12px">Associations from decades of published research; reading is a major contributing factor, not the only one.</p>
+    <div class="pillars rv" style="margin-top:clamp(30px,4vw,46px)">
       <div class="pillar">
         <h3>Reading rewires attention</h3>
         <p>Finishing a demanding book trains the sustained focus that scrolling quietly erodes—a workout for the part of the mind school rarely exercises.</p>
@@ -449,11 +461,6 @@
         <h3>It compounds</h3>
         <p>Strong readers and writers do better across every subject, in admissions, and at work. Few advantages start this early or last this long.</p>
       </div>
-    </div>
-    <div class="rv" style="margin-top:clamp(24px,3vw,38px);border:1px solid var(--rule);border-radius:12px;padding:20px 22px;background:var(--surface)">
-      <p class="rlabel">What the research links to strong reading</p>
-      <p style="margin:0;color:var(--ink-2);max-width:70ch">Decades of studies connect consistent, advanced reading with <b>stronger grades across subjects</b>, <b>larger vocabulary and higher verbal reasoning</b>, sharper <b>communication</b>, and better long-run outcomes in <b>education, earnings, and health</b>. Few childhood habits predict where a student ends up as reliably as how much and how deeply they read.</p>
-      <p style="margin:8px 0 0;font-size:0.78rem;color:var(--ink-3)">These are associations from published research—reading is a major contributing factor, not the only one.</p>
     </div>
   </div></section>
 
